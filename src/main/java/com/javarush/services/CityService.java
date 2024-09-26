@@ -9,14 +9,14 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CityServices {
+public class CityService {
     private final SessionFactory sessionFactory;
-    private final CountryServices countryServices;
-    private static final Logger LOGGER = LoggerFactory.getLogger(CountryServices.class);
+    private final CountryService countryService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CountryService.class);
 
-    public CityServices(SessionFactory sessionFactory, CountryServices countryServices) {
+    public CityService(SessionFactory sessionFactory, CountryService countryService) {
         this.sessionFactory = sessionFactory;
-        this.countryServices = countryServices;
+        this.countryService = countryService;
     }
 
     public List<City> getItems(int offset, int limit) {

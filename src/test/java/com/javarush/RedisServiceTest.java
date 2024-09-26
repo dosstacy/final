@@ -1,8 +1,9 @@
-package com.javarush.services;
+package com.javarush;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javarush.redis.CityCountry;
+import com.javarush.services.RedisService;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-class RedisServicesTest {
+class RedisServiceTest {
     @Mock
     private RedisClient redisClient;
 
@@ -27,7 +28,7 @@ class RedisServicesTest {
     private RedisCommands<String, String> syncCommands;
 
     @InjectMocks
-    private RedisServices redisServices;
+    private RedisService redisService;
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -46,7 +47,7 @@ class RedisServicesTest {
 
         List<CityCountry> data = List.of(cityCountry);
 
-        redisServices.pushToRedis(data);
+        redisService.pushToRedis(data);
 
         verify(syncCommands, times(1)).set(eq("1"), eq(mapper.writeValueAsString(cityCountry)));
     }
@@ -62,7 +63,7 @@ class RedisServicesTest {
 
         List<Integer> ids = List.of(1);
 
-        redisServices.testRedisData(ids);
+        redisService.testRedisData(ids);
 
         verify(syncCommands, times(1)).get("1");
     }

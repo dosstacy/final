@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
-public class CountryServices {
+public class CountryService {
     private final SessionFactory sessionFactory;
-    private static final Logger LOGGER = LoggerFactory.getLogger(CountryServices.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CountryService.class);
 
-    public CountryServices(SessionFactory sessionFactory) {
+    public CountryService(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 

@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class RedisServices {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CountryServices.class);
+public class RedisService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CountryService.class);
     private final RedisClient redisClient;
     private final ObjectMapper mapper;
 
-    public RedisServices(RedisClient redisClient) {
+    public RedisService(RedisClient redisClient) {
         this.redisClient = redisClient;
         this.mapper = new ObjectMapper();
     }

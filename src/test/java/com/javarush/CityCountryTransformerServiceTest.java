@@ -1,4 +1,4 @@
-package com.javarush.services;
+package com.javarush;
 
 import com.javarush.domain.City;
 import com.javarush.domain.Continent;
@@ -6,6 +6,7 @@ import com.javarush.domain.Country;
 import com.javarush.domain.CountryLanguage;
 import com.javarush.redis.CityCountry;
 import com.javarush.redis.Language;
+import com.javarush.services.CityCountryTransformerService;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

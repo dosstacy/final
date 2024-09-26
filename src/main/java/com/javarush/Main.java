@@ -5,9 +5,9 @@ import com.javarush.config.RedisConfig;
 import com.javarush.domain.City;
 import com.javarush.redis.CityCountry;
 import com.javarush.services.CityCountryTransformerService;
-import com.javarush.services.CityServices;
-import com.javarush.services.CountryServices;
-import com.javarush.services.RedisServices;
+import com.javarush.services.CityService;
+import com.javarush.services.CountryService;
+import com.javarush.services.RedisService;
 import com.javarush.utils.CityDataProcessing;
 import io.lettuce.core.RedisClient;
 import org.hibernate.SessionFactory;
@@ -38,22 +38,22 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        RedisServices redisServices = new RedisServices(main.redisClient);
+        RedisService redisService = new RedisService(main.redisClient);
 
-        CountryServices countryServices = new CountryServices(main.sessionFactory);
-        CityServices cityServices = new CityServices(main.sessionFactory, countryServices);
+        CountryService countryService = new CountryService(main.sessionFactory);
+        CityService cityService = new CityService(main.sessionFactory, countryService);
         CityCountryTransformerService transformer = new CityCountryTransformerService();
-        CityDataProcessing cityDataProcessing = new CityDataProcessing(main.sessionFactory, cityServices, countryServices);
+        CityDataProcessing cityDataProcessing = new CityDataProcessing(main.sessionFactory, cityService, countryService);
 
         List<City> allCities = cityDataProcessing.fetchData();
         List<CityCountry> preparedData = transformer.transformData(allCities);
-        redisServices.pushToRedis(preparedData);
+        redisService.pushToRedis(preparedData);
         main.sessionFactory.getCurrentSession().close();
 
         List<Integer> ids = List.of(3, 2545, 123, 4, 189, 89, 3458, 1189, 10, 102);
 
         long startRedis = System.currentTimeMillis();
-        redisServices.testRedisData(ids);
+        redisService.testRedisData(ids);
         long stopRedis = System.currentTimeMillis();
 
         long startMysql = System.currentTimeMillis();

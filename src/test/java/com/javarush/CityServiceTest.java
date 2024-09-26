@@ -1,10 +1,11 @@
-package com.javarush.services;
+package com.javarush;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.javarush.domain.City;
-import com.javarush.domain.Country;
+import com.javarush.services.CityService;
+import com.javarush.services.CountryService;
 import org.hibernate.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
-public class CityServicesTest {
+public class CityServiceTest {
 
     @Mock
     private SessionFactory sessionFactory;
@@ -36,10 +36,10 @@ public class CityServicesTest {
     private Query<Long> countQuery;
 
     @Mock
-    private CountryServices countryServices;
+    private CountryService countryService;
 
     @InjectMocks
-    private CityServices cityServices;
+    private CityService cityService;
 
     @BeforeEach
     public void setUp() {
@@ -59,7 +59,7 @@ public class CityServicesTest {
         when(cityQuery.setMaxResults(anyInt())).thenReturn(cityQuery);
         when(cityQuery.list()).thenReturn(expectedCities);
 
-        List<City> actualCities = cityServices.getItems(0, 10);
+        List<City> actualCities = cityService.getItems(0, 10);
 
         assertEquals(expectedCities, actualCities);
         verify(session).createQuery("select c from City c", City.class);
@@ -73,7 +73,7 @@ public class CityServicesTest {
         when(session.createQuery("select count(c) from City c", Long.class)).thenReturn(countQuery);
         when(countQuery.uniqueResult()).thenReturn(100L);
 
-        int totalCount = cityServices.getTotalCount();
+        int totalCount = cityService.getTotalCount();
 
         assertEquals(100, totalCount);
         verify(session).createQuery("select count(c) from City c", Long.class);
@@ -87,7 +87,7 @@ public class CityServicesTest {
         when(cityQuery.setParameter("ID", 1)).thenReturn(cityQuery);
         when(cityQuery.getSingleResult()).thenReturn(expectedCity);
 
-        City actualCity = cityServices.getById(1);
+        City actualCity = cityService.getById(1);
 
         assertEquals(expectedCity, actualCity);
         verify(session).createQuery("select c from City c join fetch c.countryId where c.id = :ID", City.class);
