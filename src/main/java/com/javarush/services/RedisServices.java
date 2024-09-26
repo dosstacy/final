@@ -6,10 +6,13 @@ import com.javarush.redis.CityCountry;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisStringCommands;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class RedisServices {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CountryServices.class);
     private final RedisClient redisClient;
     private final ObjectMapper mapper;
 
@@ -25,6 +28,7 @@ public class RedisServices {
                 try {
                     sync.set(String.valueOf(cityCountry.getId()), mapper.writeValueAsString(cityCountry));
                 } catch (JsonProcessingException e) {
+                    LOGGER.error("Failed push to redis. Error message :: {}", e.getMessage());
                     e.printStackTrace(System.out);
                 }
             }
@@ -39,9 +43,12 @@ public class RedisServices {
                 try {
                     mapper.readValue(value, CityCountry.class);
                 } catch (JsonProcessingException e) {
+                    LOGGER.error("Error message :: {}", e.getMessage());
                     e.printStackTrace(System.out);
                 }
             }
+        }catch(Exception e) {
+            LOGGER.error("Error connecting to Redis. Error Message :: {}", e.getMessage());
         }
     }
 }
