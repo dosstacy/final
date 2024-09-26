@@ -49,5 +49,4 @@ public class CityServices {
             return null;
         }
     }
-    //cover by tests, loggers
 }
