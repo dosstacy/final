@@ -26,6 +26,4 @@ public class CountryServices {
             return Collections.emptyList();
         }
     }
-
-    //cover by tests, loggers
 }
