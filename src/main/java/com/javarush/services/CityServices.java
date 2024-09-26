@@ -11,12 +11,10 @@ import java.util.List;
 
 public class CityServices {
     private final SessionFactory sessionFactory;
-    private final CountryServices countryServices;
     private static final Logger LOGGER = LoggerFactory.getLogger(CountryServices.class);
 
-    public CityServices(SessionFactory sessionFactory, CountryServices countryServices) {
+    public CityServices(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.countryServices = countryServices;
     }
 
     public List<City> getItems(int offset, int limit) {
