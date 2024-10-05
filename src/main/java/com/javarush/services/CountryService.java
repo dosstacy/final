@@ -58,7 +58,7 @@ public class CountryService {
             return countries;
         }catch (Exception e){
             LOGGER.error("ERROR :: cannot get all countries");
-            throw new CountryException("ERROR :: cannot get all countries");
+            throw new CountryException("ERROR :: cannot get all countries: " + e);
         }
     }
 

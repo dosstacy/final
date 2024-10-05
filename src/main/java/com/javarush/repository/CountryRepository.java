@@ -13,9 +13,12 @@ public class CountryRepository implements CrudRepository<Country, Long> {
     @Override
     public Country getById(Long id) {
         try (Session session = sessionFactory.getCurrentSession()) {
-            return session.createQuery("select c from Country c join fetch c.languages where c.id = :ID", Country.class)
+            session.beginTransaction();
+            Country country = session.createQuery("select c from Country c join fetch c.languages where c.id = :ID", Country.class)
                     .setParameter("ID", id)
                     .getSingleResult();
+            session.getTransaction().commit();
+            return country;
         }
     }
 
@@ -43,7 +46,10 @@ public class CountryRepository implements CrudRepository<Country, Long> {
     @Override
     public List<Country> getAll() {
         try (Session session = sessionFactory.getCurrentSession()) {
-            return session.createQuery("select c from Country c join fetch c.languages", Country.class).list();
+            session.beginTransaction();
+            List<Country> list = session.createQuery("select c from Country c join fetch c.languages", Country.class).list();
+            session.getTransaction().commit();
+            return list;
         }
     }
 
