@@ -1,4 +1,4 @@
-package com.javarush.domain;
+package com.javarush.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

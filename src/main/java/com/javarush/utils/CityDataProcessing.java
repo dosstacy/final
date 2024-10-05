@@ -1,8 +1,8 @@
 package com.javarush.utils;
 
-import com.javarush.domain.City;
-import com.javarush.domain.Country;
-import com.javarush.domain.CountryLanguage;
+import com.javarush.domain.entity.City;
+import com.javarush.domain.entity.Country;
+import com.javarush.domain.entity.CountryLanguage;
 import com.javarush.services.CityService;
 import com.javarush.services.CountryService;
 import org.hibernate.Session;

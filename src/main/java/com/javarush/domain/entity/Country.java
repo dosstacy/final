@@ -1,5 +1,6 @@
-package com.javarush.domain;
+package com.javarush.domain.entity;
 
+import com.javarush.domain.enums.Continent;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

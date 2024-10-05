@@ -3,7 +3,7 @@ package com.javarush;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.javarush.domain.Country;
+import com.javarush.domain.entity.Country;
 import com.javarush.services.CountryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

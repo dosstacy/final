@@ -1,9 +1,9 @@
 package com.javarush;
 
-import com.javarush.domain.City;
-import com.javarush.domain.Continent;
-import com.javarush.domain.Country;
-import com.javarush.domain.CountryLanguage;
+import com.javarush.domain.entity.City;
+import com.javarush.domain.enums.Continent;
+import com.javarush.domain.entity.Country;
+import com.javarush.domain.entity.CountryLanguage;
 import com.javarush.redis.CityCountry;
 import com.javarush.redis.Language;
 import com.javarush.services.CityCountryTransformerService;

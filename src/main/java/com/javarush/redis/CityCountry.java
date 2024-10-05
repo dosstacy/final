@@ -1,6 +1,6 @@
 package com.javarush.redis;
 
-import com.javarush.domain.Continent;
+import com.javarush.domain.enums.Continent;
 import lombok.Data;
 
 import java.math.BigDecimal;

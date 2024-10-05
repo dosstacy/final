@@ -1,6 +1,6 @@
 package com.javarush.services;
 
-import com.javarush.domain.City;
+import com.javarush.domain.entity.City;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
