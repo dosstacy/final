@@ -11,7 +11,7 @@ import java.util.List;
 public class CityService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CityService.class);
 
-    public City getById(Long id) {
+    public City getById(Integer id) {
         try {
             City city = new CityRepository().getById(id);
             if (city == null) {
@@ -21,7 +21,7 @@ public class CityService {
             return city;
         }catch (Exception e){
             LOGGER.error("ERROR :: cannot get city with id {}", id);
-            throw new CityException("ERROR :: cannot get city with id " + id);
+            throw new CityException("ERROR :: cannot get city with id " + id + e);
         }
     }
 
@@ -39,7 +39,7 @@ public class CityService {
         }
     }
 
-    public void delete(Long id) {
+    public void delete(Integer id) {
         try{
             new CityRepository().delete(id);
         }catch (Exception e){

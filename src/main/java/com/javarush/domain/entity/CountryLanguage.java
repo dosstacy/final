@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public class CountryLanguage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @ManyToOne
     @JoinColumn(name = "country_id")
     private Country countryId;

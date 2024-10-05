@@ -11,7 +11,7 @@ import java.util.List;
 public class CountryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CountryService.class);
 
-    public Country getById(Long id) {
+    public Country getById(Integer id) {
         try {
             Country country = new CountryRepository().getById(id);
             if (country == null) {
@@ -39,7 +39,7 @@ public class CountryService {
         }
     }
 
-    public void delete(Long id) {
+    public void delete(Integer id) {
         try{
             new CountryRepository().delete(id);
         }catch (Exception e){

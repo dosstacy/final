@@ -7,11 +7,11 @@ import org.hibernate.SessionFactory;
 
 import java.util.List;
 
-public class CityRepository implements CrudRepository<City, Long> {
+public class CityRepository implements CrudRepository<City, Integer> {
     private final SessionFactory sessionFactory = HibernateUtil.prepareRelationalDb();
 
     @Override
-    public City getById(Long id) {
+    public City getById(Integer id) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
             City city = session.createQuery("select c from City c join fetch c.countryId where c.id = :ID", City.class)
@@ -33,7 +33,7 @@ public class CityRepository implements CrudRepository<City, Long> {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Integer id) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
             session.createQuery("delete from City c where c.id = :ID", City.class)
