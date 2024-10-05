@@ -32,7 +32,7 @@ public class Country {
     @Column(name = "surface_area")
     private BigDecimal surfaceArea;
     @Column(name = "indep_year")
-    private short indepYear;
+    private Short indepYear;
     @Column(name = "population")
     private int population;
     @Column(name = "life_expectancy")
