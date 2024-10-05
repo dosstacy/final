@@ -10,4 +10,8 @@ public interface CrudRepository <T, I>{
     void delete(I id);
 
     List<T> getAll();
+
+    List<T> getItems(int offset, int limit);
+
+    int getTotalCount();
 }
