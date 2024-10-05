@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CityCountryTransformerServiceTest {
     @Test
-    public void testTransformData() {
+    public void testInitialisation() {
         City city = new City();
         city.setId(1);
         city.setName("Test City");
@@ -42,7 +42,7 @@ class CityCountryTransformerServiceTest {
         country.setLanguages(Set.of(countryLanguage));
 
         CityCountryTransformerService cityCountryService = new CityCountryTransformerService();
-        List<CityCountry> result = cityCountryService.transformData(List.of(city));
+        List<CityCountry> result = cityCountryService.initialisation(List.of(city));
 
         assertNotNull(result);
         assertEquals(1, result.size());
