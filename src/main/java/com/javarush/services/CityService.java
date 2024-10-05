@@ -21,6 +21,7 @@ public class CityService {
 
     public List<City> getItems(int offset, int limit) {
         try {
+            System.out.println("HELLO from getItems");
             Query<City> query = sessionFactory.getCurrentSession().createQuery("select c from City c", City.class);
             query.setFirstResult(offset);
             query.setMaxResults(limit);
@@ -33,6 +34,7 @@ public class CityService {
 
     public int getTotalCount() {
         try {
+            System.out.println("HELLO from getTotal count");
             Query<Long> query = sessionFactory.getCurrentSession().createQuery("select count(c) from City c", Long.class);
             return Math.toIntExact(query.uniqueResult());
         } catch (Exception e) {
@@ -43,6 +45,7 @@ public class CityService {
 
     public City getById(Integer id) {
         try {
+            System.out.println("HELLO from get by id");
             Query<City> query = sessionFactory.getCurrentSession().createQuery("select c from City c join fetch c.countryId where c.id = :ID", City.class);
             query.setParameter("ID", id);
             return query.getSingleResult();
