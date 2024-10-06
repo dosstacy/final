@@ -13,7 +13,13 @@ import org.hibernate.cfg.Environment;
 import java.util.Properties;
 
 public class HibernateUtil {
-    public static SessionFactory prepareRelationalDb() {
+    private static SessionFactory sessionFactory;
+
+    private HibernateUtil() {
+
+    }
+
+    private static SessionFactory prepareRelationalDb() {
         final SessionFactory sessionFactory;
         Properties properties = new Properties();
         properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
@@ -34,13 +40,10 @@ public class HibernateUtil {
         return sessionFactory;
     }
 
-    public RedisClient prepareRedisClient() {
-        RedisClient redisClient = RedisClient.create(RedisURI.create("localhost", 6379));
-        try (StatefulRedisConnection<String, String> connection = redisClient.connect()) {
-            System.out.println("\nConnected to Redis\n");
+    public static SessionFactory getSessionFactory() {
+        if(sessionFactory == null) {
+            sessionFactory = prepareRelationalDb();
         }
-        return redisClient;
+        return sessionFactory;
     }
-
-
 }
