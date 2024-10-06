@@ -3,9 +3,6 @@ package com.javarush.config;
 import com.javarush.domain.entity.City;
 import com.javarush.domain.entity.Country;
 import com.javarush.domain.entity.CountryLanguage;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.RedisURI;
-import io.lettuce.core.api.StatefulRedisConnection;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
@@ -41,7 +38,7 @@ public class HibernateUtil {
     }
 
     public static SessionFactory getSessionFactory() {
-        if(sessionFactory == null) {
+        if (sessionFactory == null) {
             sessionFactory = prepareRelationalDb();
         }
         return sessionFactory;
