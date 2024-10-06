@@ -49,7 +49,7 @@ public class RedisRepository {
         try {
             return objectMapper.writeValueAsString(entity);
         } catch (Exception e) {
-            LOGGER.error("Error serializing object: " + e.getMessage());
+            LOGGER.error("Error serializing object: {}", e.getMessage());
             return null;
         }
     }
@@ -58,37 +58,8 @@ public class RedisRepository {
         try {
             return objectMapper.readValue(serializedEntity, clazz);
         } catch (Exception e) {
-            LOGGER.error("Error deserializing object: " + e.getMessage());
+            LOGGER.error("Error deserializing object: {}", e.getMessage());
             return null;
         }
     }
 }
-
-/*public void save(String key, T entity) {
-       jedis.set(key, serialize(entity));
-
-public void delete(String key) {
-        jedis.del(key);
-    }
-
-    public List<T> getAll(String listName, Class<T> clazz) {
-        List<String> str = jedis.lrange(listName, 0, -1);
-        List<T> typeClass = new ArrayList<>();
-        for (String s : str) {
-            typeClass.add(deserialize(s, clazz));
-        }
-        return typeClass;
-    }
-
-    public List<T> getItems(String listName, int offset, int limit, Class<T> clazz) {
-        List<String> str = jedis.lrange(listName, offset, limit - 1);
-        List<T> typeClass = new ArrayList<>();
-        for (String s : str) {
-            typeClass.add(deserialize(s, clazz));
-        }
-        return typeClass;
-    }
-
-    public int getTotalCount(String listName) {
-        return Math.toIntExact(jedis.llen(listName));
-    }*/
