@@ -22,5 +22,5 @@ public class City {
     @Column(name = "district")
     private String district;
     @Column(name = "population")
-    private int population;
+    private Integer population;
 }

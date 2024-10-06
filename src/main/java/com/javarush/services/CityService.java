@@ -1,7 +1,10 @@
 package com.javarush.services;
 
+import com.javarush.DataTransformer;
+import com.javarush.cache.RedisRepository;
 import com.javarush.domain.entity.City;
 import com.javarush.domain.exceptions.CityException;
+import com.javarush.redis.CityCountry;
 import com.javarush.repository.CityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,18 +13,23 @@ import java.util.List;
 
 public class CityService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CityService.class);
+    private final RedisRepository redisRepository = new RedisRepository();
+    private final CityRepository cityRepository = new CityRepository();
+    private final DataTransformer dataTransformer = new DataTransformer();
 
     public City getById(Integer id) {
+        String key = "city_" + id;
         try {
-            City city = new CityRepository().getById(id);
-            if (city == null) {
-                LOGGER.error("ERROR :: city with id {} not found", id);
-                throw new CityException("ERROR :: city with id " + id + " not found");
+            if(redisRepository.checkExists(key)){
+                CityCountry cityCountry = redisRepository.getById(key, CityCountry.class);
+                return dataTransformer.cityCountryTransformToCity(cityCountry);
             }
+            City city = cityRepository.getById(id);
+            redisRepository.put(key, dataTransformer.cityTransformToCityCountry(city));
             return city;
-        }catch (Exception e){
-            LOGGER.error("ERROR :: cannot get city with id {}", id);
-            throw new CityException("ERROR :: cannot get city with id " + id + e);
+        } catch (Exception e) {
+            LOGGER.error("Cannot get city with id {}", id);
+            throw new CityException("ERROR :: cannot get city with id " + id + " " + e.getMessage());
         }
     }
 
@@ -29,22 +37,22 @@ public class CityService {
         try {
             City city = new CityRepository().save(entity);
             if (city == null) {
-                LOGGER.error("ERROR :: no city with id {}", entity.getId());
+                LOGGER.error("No city with id {}", entity.getId());
                 throw new CityException("ERROR :: no city with id " + entity.getId());
             }
             return city;
-        }catch(Exception e) {
-            LOGGER.error("ERROR :: cannot save city with id {}", entity.getId());
-            throw new CityException("ERROR :: cannot save city with id " + entity.getId());
+        } catch (Exception e) {
+            LOGGER.error("Cannot save city with id {}", entity.getId());
+            throw new CityException("ERROR :: cannot save city with id " + entity.getId() + " " + e.getMessage());
         }
     }
 
     public void delete(Integer id) {
-        try{
+        try {
             new CityRepository().delete(id);
-        }catch (Exception e){
-            LOGGER.error("ERROR :: cannot delete city with id: {}", id);
-            throw new CityException("ERROR :: cannot delete city with id: " + id);
+        } catch (Exception e) {
+            LOGGER.error("Cannot delete city with id: {}", id);
+            throw new CityException("ERROR :: cannot delete city with id: " + id + " " + e.getMessage());
         }
     }
 
@@ -52,41 +60,41 @@ public class CityService {
         try {
             List<City> cities = new CityRepository().getAll();
             if (cities.isEmpty()) {
-                LOGGER.error("ERROR :: no cities found");
+                LOGGER.error("No cities found");
                 throw new CityException("ERROR :: no cities found");
             }
             return cities;
-        }catch (Exception e){
-            LOGGER.error("ERROR :: cannot get all cities");
-            throw new CityException("ERROR :: cannot get all cities");
+        } catch (Exception e) {
+            LOGGER.error("Cannot get all cities");
+            throw new CityException("ERROR :: cannot get all cities: " + e.getMessage());
         }
     }
 
     public List<City> getItems(int offset, int limit) {
-        try{
+        try {
             List<City> cities = new CityRepository().getItems(offset, limit);
             if (cities.isEmpty()) {
-                LOGGER.error("ERROR :: no cities found in range");
+                LOGGER.error("No cities found in range");
                 throw new CityException("ERROR :: no cities found in range");
             }
             return cities;
-        }catch (Exception e){
-            LOGGER.error("ERROR :: cannot get all cities in range");
-            throw new CityException("ERROR :: cannot get all cities in range");
+        } catch (Exception e) {
+            LOGGER.error("Cannot get all cities in range");
+            throw new CityException("ERROR :: cannot get all cities in range: " + e.getMessage());
         }
     }
 
     public int getTotalCount() {
-        try{
+        try {
             int totalCount = new CityRepository().getTotalCount();
             if (totalCount == 0) {
-                LOGGER.error("ERROR :: total cities count is 0");
+                LOGGER.error("Total cities count is 0");
                 throw new CityException("ERROR :: total cities count is 0");
             }
             return totalCount;
-        }catch(Exception e){
-            LOGGER.error("ERROR :: cannot get all cities count");
-            throw new CityException("ERROR :: cannot get all cities count");
+        } catch (Exception e) {
+            LOGGER.error("Cannot get all cities count");
+            throw new CityException("ERROR :: cannot get all cities count: " + e.getMessage());
         }
     }
 }

@@ -8,17 +8,14 @@ import org.hibernate.SessionFactory;
 import java.util.List;
 
 public class CountryRepository implements CrudRepository<Country, Integer> {
-    private final SessionFactory sessionFactory = HibernateUtil.prepareRelationalDb();
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
     @Override
     public Country getById(Integer id) {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
-            Country country = session.createQuery("select c from Country c join fetch c.languages where c.id = :ID", Country.class)
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery("select c from Country c where c.id = :ID", Country.class)
                     .setParameter("ID", id)
                     .getSingleResult();
-            session.getTransaction().commit();
-            return country;
         }
     }
 
@@ -45,17 +42,14 @@ public class CountryRepository implements CrudRepository<Country, Integer> {
 
     @Override
     public List<Country> getAll() {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
-            List<Country> list = session.createQuery("select c from Country c join fetch c.languages", Country.class).list();
-            session.getTransaction().commit();
-            return list;
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery("select c from Country c join fetch c.languages", Country.class).list();
         }
     }
 
     @Override
     public List<Country> getItems(int offset, int limit) {
-        try(Session session = sessionFactory.getCurrentSession()) {
+        try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
             List<Country> countryList = session.createQuery("select c from Country c", Country.class)
                     .setFirstResult(offset)
@@ -68,7 +62,7 @@ public class CountryRepository implements CrudRepository<Country, Integer> {
 
     @Override
     public int getTotalCount() {
-        try(Session session = sessionFactory.getCurrentSession()) {
+        try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
             int intExact = Math.toIntExact(session.createQuery("select count(c) from Country c", Long.class).uniqueResult());
             session.getTransaction().commit();

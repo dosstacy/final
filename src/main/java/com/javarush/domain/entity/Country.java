@@ -34,7 +34,7 @@ public class Country {
     @Column(name = "indep_year")
     private Short indepYear;
     @Column(name = "population")
-    private int population;
+    private Integer population;
     @Column(name = "life_expectancy")
     private BigDecimal lifeExpectancy;
     @Column(name = "gnp")

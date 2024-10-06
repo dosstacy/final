@@ -32,7 +32,6 @@ public class RedisRepository {
         jedis.topkAdd(TOPK_NAME, key);
 
         if (getCount(key) >= THRESHOLD) {
-            System.out.println(serialize(value));
             jedis.set(key, serialize(value));
         }
     }
