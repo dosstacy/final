@@ -50,23 +50,17 @@ public class CountryRepository implements CrudRepository<Country, Integer> {
     @Override
     public List<Country> getItems(int offset, int limit) {
         try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
-            List<Country> countryList = session.createQuery("select c from Country c", Country.class)
+            return session.createQuery("select c from Country c", Country.class)
                     .setFirstResult(offset)
                     .setMaxResults(limit)
                     .list();
-            session.getTransaction().commit();
-            return countryList;
         }
     }
 
     @Override
     public int getTotalCount() {
         try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
-            int intExact = Math.toIntExact(session.createQuery("select count(c) from Country c", Long.class).uniqueResult());
-            session.getTransaction().commit();
-            return intExact;
+            return Math.toIntExact(session.createQuery("select count(c) from Country c", Long.class).uniqueResult());
         }
     }
 }

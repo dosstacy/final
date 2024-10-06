@@ -22,7 +22,7 @@ public class CityRepository implements CrudRepository<City, Integer> {
 
     @Override
     public City save(City entity) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
             session.persist(entity);
             transaction.commit();
@@ -32,25 +32,25 @@ public class CityRepository implements CrudRepository<City, Integer> {
 
     @Override
     public void delete(Integer id) {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
+        try (Session session = sessionFactory.getCurrentSession()) {
+            Transaction transaction = session.beginTransaction();
             session.createQuery("delete from City c where c.id = :ID", City.class)
                     .setParameter("ID", id)
                     .executeUpdate();
-            session.getTransaction().commit();
+            transaction.commit();
         }
     }
 
     @Override
     public List<City> getAll() {
-        try (Session session = sessionFactory.getCurrentSession()) {
+        try (Session session = sessionFactory.openSession()) {
             return session.createQuery("select c from City c", City.class).list();
         }
     }
 
     @Override
     public List<City> getItems(int offset, int limit) {
-        try(Session session = sessionFactory.getCurrentSession()) {
+        try(Session session = sessionFactory.openSession()) {
             return session.createQuery("select c from City c", City.class)
                     .setFirstResult(offset)
                     .setMaxResults(limit)

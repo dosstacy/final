@@ -6,26 +6,27 @@ import com.javarush.domain.entity.City;
 import com.javarush.domain.exceptions.CityException;
 import com.javarush.redis.CityCountry;
 import com.javarush.repository.CityRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 public class CityService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CityService.class);
-    private final RedisRepository redisRepository = new RedisRepository();
-    private final CityRepository cityRepository = new CityRepository();
-    private final DataTransformer dataTransformer = new DataTransformer();
+    private final RedisRepository redisRepository;
+    private final CityRepository cityRepository;
 
     public City getById(Integer id) {
         String key = "city_" + id;
         try {
             if(redisRepository.checkExists(key)){
                 CityCountry cityCountry = redisRepository.getById(key, CityCountry.class);
-                return dataTransformer.cityCountryTransformToCity(cityCountry);
+                return DataTransformer.cityCountryTransformToCity(cityCountry);
             }
             City city = cityRepository.getById(id);
-            redisRepository.put(key, dataTransformer.cityTransformToCityCountry(city));
+            redisRepository.put(key, DataTransformer.cityTransformToCityCountry(city));
             return city;
         } catch (Exception e) {
             LOGGER.error("Cannot get city with id {}", id);

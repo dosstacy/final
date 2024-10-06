@@ -8,6 +8,8 @@ import com.javarush.config.RedisConfig;
 import com.javarush.domain.entity.City;
 import com.javarush.domain.entity.CountryLanguage;
 import com.javarush.redis.CityCountry;
+import com.javarush.repository.CityRepository;
+import com.javarush.repository.CountryRepository;
 import com.javarush.services.CityService;
 import com.javarush.services.CountryService;
 import io.lettuce.core.RedisClient;
@@ -23,17 +25,17 @@ import java.util.Set;
 import static java.util.Objects.nonNull;
 
 public class Main {
-    private final SessionFactory sessionFactory;
-    private final RedisClient redisClient;
-    private final CityService cityService;
-    private final CountryService countryService;
-    private final ObjectMapper mapper;
+    public final SessionFactory sessionFactory;
+    public final RedisClient redisClient;
+    public final CityService cityService;
+    public final CountryService countryService;
+    public final ObjectMapper mapper;
 
     public Main() {
         sessionFactory = HibernateUtil.getSessionFactory();
         redisClient = RedisConfig.prepareRedisClient();
-        cityService = new CityService();
-        countryService = new CountryService();
+        cityService = new CityService(new RedisRepository(), new CityRepository());
+        countryService = new CountryService(new RedisRepository(), new CountryRepository());
         mapper = new ObjectMapper();
     }
 
@@ -47,16 +49,14 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        Main main = new Main();
         RedisRepository countryRedisRepository = new RedisRepository();
         RedisRepository cityRedisRepository = new RedisRepository();
 
-        CountryService countryService = new CountryService();
-        CityService cityService = new CityService();
-
         System.out.println("Querying Country by ID...");
         for (int i = 0; i < 15; i++) {
-            countryService.getById(1);
-            cityService.getById(2);
+            main.countryService.getById(1);
+            main.cityService.getById(2);
         }
     }
 

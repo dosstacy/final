@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DataTransformer {
-    public CityCountry countryTransformToCityCountry(Country country) {
+    public static CityCountry countryTransformToCityCountry(Country country) {
         CityCountry res = new CityCountry();
         res.setAlternativeCountryCode(country.getCode2());
         res.setContinent(country.getContinent());
@@ -31,7 +31,7 @@ public class DataTransformer {
         return res;
     }
 
-    public CityCountry cityTransformToCityCountry(City city) {
+    public static CityCountry cityTransformToCityCountry(City city) {
         CityCountry res = new CityCountry();
         res.setId(city.getId());
         res.setName(city.getName());
@@ -40,7 +40,7 @@ public class DataTransformer {
         return res;
     }
 
-    public City cityCountryTransformToCity(CityCountry cityCountry) {
+    public static City cityCountryTransformToCity(CityCountry cityCountry) {
         City city = new City();
         city.setId(cityCountry.getId());
         city.setName(cityCountry.getName());
@@ -49,7 +49,7 @@ public class DataTransformer {
         return city;
     }
 
-    public Country cityCountryToCountry(CityCountry cityCountry) {
+    public static Country cityCountryToCountry(CityCountry cityCountry) {
         Country country = new Country();
         country.setCode2(cityCountry.getAlternativeCountryCode());
         country.setContinent(cityCountry.getContinent());
