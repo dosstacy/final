@@ -1,30 +1,40 @@
 package com.javarush;
 
-import com.javarush.config.DatabaseConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.javarush.cache.RedisRepository;
+import com.javarush.config.HibernateUtil;
 import com.javarush.config.RedisConfig;
-import com.javarush.domain.City;
+import com.javarush.domain.entity.City;
+import com.javarush.domain.entity.CountryLanguage;
 import com.javarush.redis.CityCountry;
-import com.javarush.services.CityCountryTransformerService;
 import com.javarush.services.CityService;
 import com.javarush.services.CountryService;
-import com.javarush.services.RedisService;
-import com.javarush.utils.CityDataProcessing;
 import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisStringCommands;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.nonNull;
 
 public class Main {
     private final SessionFactory sessionFactory;
     private final RedisClient redisClient;
+    private final CityService cityService;
+    private final CountryService countryService;
+    private final ObjectMapper mapper;
 
     public Main() {
-        DatabaseConfig databaseConfig = new DatabaseConfig();
-        sessionFactory = databaseConfig.prepareRelationalDb();
-        RedisConfig redisConfig = new RedisConfig();
-        redisClient = redisConfig.prepareRedisClient();
+        sessionFactory = HibernateUtil.getSessionFactory();
+        redisClient = RedisConfig.prepareRedisClient();
+        cityService = new CityService();
+        countryService = new CountryService();
+        mapper = new ObjectMapper();
     }
 
     private void shutdown() {
@@ -37,33 +47,72 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Main main = new Main();
-        RedisService redisService = new RedisService(main.redisClient);
+        RedisRepository countryRedisRepository = new RedisRepository();
+        RedisRepository cityRedisRepository = new RedisRepository();
 
-        CountryService countryService = new CountryService(main.sessionFactory);
-        CityService cityService = new CityService(main.sessionFactory, countryService);
-        CityCountryTransformerService transformer = new CityCountryTransformerService();
-        CityDataProcessing cityDataProcessing = new CityDataProcessing(main.sessionFactory, cityService, countryService);
+        CountryService countryService = new CountryService();
+        CityService cityService = new CityService();
 
-        List<City> allCities = cityDataProcessing.fetchData();
-        List<CityCountry> preparedData = transformer.transformData(allCities);
-        redisService.pushToRedis(preparedData);
-        main.sessionFactory.getCurrentSession().close();
-
-        List<Integer> ids = List.of(3, 2545, 123, 4, 189, 89, 3458, 1189, 10, 102);
-
-        long startRedis = System.currentTimeMillis();
-        redisService.testRedisData(ids);
-        long stopRedis = System.currentTimeMillis();
-
-        long startMysql = System.currentTimeMillis();
-        cityDataProcessing.testMysqlData(ids);
-        long stopMysql = System.currentTimeMillis();
-
-        System.out.printf("%s:\t%d ms\n", "Redis", (stopRedis - startRedis));
-        System.out.printf("%s:\t%d ms\n", "MySQL", (stopMysql - startMysql));
-
-        main.shutdown();
+        System.out.println("Querying Country by ID...");
+        for (int i = 0; i < 15; i++) {
+            countryService.getById(1);
+            cityService.getById(2);
+        }
     }
 
+    private void pushToRedis(List<CityCountry> data) {
+        try (StatefulRedisConnection<String, String> connection = redisClient.connect()) {
+            RedisStringCommands<String, String> sync = connection.sync();
+            for (CityCountry cityCountry : data) {
+                try {
+                    sync.set(String.valueOf(cityCountry.getId()), mapper.writeValueAsString(cityCountry));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace(System.out);
+                }
+            }
+
+        }
+    }
+
+    private void testRedisData(List<Integer> ids) {
+        try (StatefulRedisConnection<String, String> connection = redisClient.connect()) {
+            RedisStringCommands<String, String> sync = connection.sync();
+            for (Integer id : ids) {
+                String value = sync.get(String.valueOf(id));
+                try {
+                    mapper.readValue(value, CityCountry.class);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace(System.out);
+                }
+            }
+        }
+    }
+
+    public void testMysqlData(List<Integer> ids) {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+            for (Integer id : ids) {
+                City city = cityService.getById(id);
+                Set<CountryLanguage> languages = city.getCountryId().getLanguages();
+            }
+            session.getTransaction().commit();
+        }
+    }
+
+    public List<City> fetchData() {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            List<City> allCities = new ArrayList<>();
+            session.beginTransaction();
+
+            countryService.getAll();
+
+            int totalCount = cityService.getTotalCount();
+            int step = 500;
+            for (int i = 0; i < totalCount; i += step) {
+                allCities.addAll(cityService.getItems(i, step));
+            }
+            session.getTransaction().commit();
+            return allCities;
+        }
+    }
 }
