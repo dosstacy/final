@@ -1,5 +1,6 @@
 package com.javarush.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.javarush.DataTransformer;
 import com.javarush.cache.RedisRepository;
 import com.javarush.domain.entity.City;
@@ -35,7 +36,7 @@ class CityServiceTest {
     }
 
     @Test
-    void testGetById_CityExistsInRedis() {
+    void testGetById_CityExistsInRedis() throws JsonProcessingException {
         int id = 1;
         String key = "city_" + id;
         CityCountry testCityCountry = DataTransformer.cityTransformToCityCountry(city);
