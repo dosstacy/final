@@ -1,18 +1,23 @@
-package com.javarush.domain;
+package com.javarush.domain.entity;
 
+import com.javarush.domain.enums.Continent;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "country")
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(name = "code")
     private String code;
     @Column(name = "code_2")
@@ -27,9 +32,9 @@ public class Country {
     @Column(name = "surface_area")
     private BigDecimal surfaceArea;
     @Column(name = "indep_year")
-    private short indepYear;
+    private Short indepYear;
     @Column(name = "population")
-    private int population;
+    private Integer population;
     @Column(name = "life_expectancy")
     private BigDecimal lifeExpectancy;
     @Column(name = "gnp")
