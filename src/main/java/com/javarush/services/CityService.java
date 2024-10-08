@@ -29,7 +29,7 @@ public class CityService {
             redisRepository.put(key, DataTransformer.cityTransformToCityCountry(city));
             return city;
         } catch (Exception e) {
-            LOGGER.error("Cannot get city with id {}", id);
+            LOGGER.error("Cannot get city with id : {} ", id, e);
             throw new CityException("ERROR :: cannot get city with id " + id + " " + e.getMessage());
         }
     }
@@ -43,7 +43,7 @@ public class CityService {
             }
             return city;
         } catch (Exception e) {
-            LOGGER.error("Cannot save city with id {}", entity.getId());
+            LOGGER.error("Cannot save city with id {}", entity.getId(), e);
             throw new CityException("ERROR :: cannot save city with id " + entity.getId() + " " + e.getMessage());
         }
     }
@@ -52,7 +52,7 @@ public class CityService {
         try {
             new CityRepository().delete(id);
         } catch (Exception e) {
-            LOGGER.error("Cannot delete city with id: {}", id);
+            LOGGER.error("Cannot delete city with id: {}", id, e);
             throw new CityException("ERROR :: cannot delete city with id: " + id + " " + e.getMessage());
         }
     }
@@ -66,7 +66,7 @@ public class CityService {
             }
             return cities;
         } catch (Exception e) {
-            LOGGER.error("Cannot get all cities");
+            LOGGER.error("Cannot get all cities : ", e);
             throw new CityException("ERROR :: cannot get all cities: " + e.getMessage());
         }
     }
@@ -80,7 +80,7 @@ public class CityService {
             }
             return cities;
         } catch (Exception e) {
-            LOGGER.error("Cannot get all cities in range");
+            LOGGER.error("Cannot get all cities in range : ", e);
             throw new CityException("ERROR :: cannot get all cities in range: " + e.getMessage());
         }
     }
@@ -94,7 +94,7 @@ public class CityService {
             }
             return totalCount;
         } catch (Exception e) {
-            LOGGER.error("Cannot get all cities count");
+            LOGGER.error("Cannot get all cities count : ", e);
             throw new CityException("ERROR :: cannot get all cities count: " + e.getMessage());
         }
     }

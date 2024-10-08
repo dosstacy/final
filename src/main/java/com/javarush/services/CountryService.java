@@ -29,7 +29,7 @@ public class CountryService {
             redisRepository.put(key, DataTransformer.countryTransformToCityCountry(country));
             return country;
         } catch (Exception e) {
-            LOGGER.error("Cannot get country with id {}", id);
+            LOGGER.error("Cannot get country with id {}", id, e);
             throw new CountryException("ERROR :: cannot get country with id " + id + " " + e.getMessage());
         }
     }
@@ -52,7 +52,7 @@ public class CountryService {
         try {
             countryRepository.delete(id);
         } catch (Exception e) {
-            LOGGER.error("Cannot delete country with id: {}", id);
+            LOGGER.error("Cannot delete country with id: {}", id, e);
             throw new CountryException("ERROR :: cannot delete country with id: " + id + " " + e.getMessage());
         }
     }
@@ -66,7 +66,7 @@ public class CountryService {
             }
             return countries;
         } catch (Exception e) {
-            LOGGER.error("Cannot get all countries");
+            LOGGER.error("Cannot get all countries : ", e);
             throw new CountryException("ERROR :: cannot get all countries: " + e.getMessage());
         }
     }
@@ -80,7 +80,7 @@ public class CountryService {
             }
             return countries;
         } catch (Exception e) {
-            LOGGER.error("Cannot get all countries in range");
+            LOGGER.error("Cannot get all countries in range : ", e);
             throw new CountryException("ERROR :: cannot get all countries in range: " + e.getMessage());
         }
     }
@@ -94,7 +94,7 @@ public class CountryService {
             }
             return totalCount;
         } catch (Exception e) {
-            LOGGER.error("Cannot get all countries count");
+            LOGGER.error("Cannot get all countries count : ", e);
             throw new CountryException("ERROR :: cannot get all countries count: " + e.getMessage());
         }
     }
