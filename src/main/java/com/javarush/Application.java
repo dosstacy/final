@@ -17,6 +17,8 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisStringCommands;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +26,15 @@ import java.util.Set;
 
 import static java.util.Objects.nonNull;
 
-public class Main {
+public class Application {
     public final SessionFactory sessionFactory;
     public final RedisClient redisClient;
     public final CityService cityService;
     public final CountryService countryService;
     public final ObjectMapper mapper;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-    public Main() {
+    public Application() {
         sessionFactory = HibernateUtil.getSessionFactory();
         redisClient = RedisConfig.prepareRedisClient();
         cityService = new CityService(new RedisRepository(), new CityRepository());
@@ -49,14 +52,15 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Main main = new Main();
+        int numOfQueries = 15;
+        Application application = new Application();
         RedisRepository countryRedisRepository = new RedisRepository();
         RedisRepository cityRedisRepository = new RedisRepository();
 
         System.out.println("Querying Country by ID...");
-        for (int i = 0; i < 15; i++) {
-            main.countryService.getById(1);
-            main.cityService.getById(2);
+        for (int i = 0; i < numOfQueries; i++) {
+            application.countryService.getById(1);
+            application.cityService.getById(2);
         }
     }
 
@@ -67,6 +71,7 @@ public class Main {
                 try {
                     sync.set(String.valueOf(cityCountry.getId()), mapper.writeValueAsString(cityCountry));
                 } catch (JsonProcessingException e) {
+                    LOGGER.error("Couldn't push to redis : ", e);
                     e.printStackTrace(System.out);
                 }
             }
@@ -82,6 +87,7 @@ public class Main {
                 try {
                     mapper.readValue(value, CityCountry.class);
                 } catch (JsonProcessingException e) {
+                    LOGGER.error("Couldn't test redis data : ", e);
                     e.printStackTrace(System.out);
                 }
             }
